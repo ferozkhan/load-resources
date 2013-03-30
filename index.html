@@ -1,0 +1,21 @@
+<! DOCTYPE HTML>
+<html>
+    <head>
+        <title> Load Resource on Demand </title>
+        <script type="text/javascript">
+
+         window.onload = function(){
+                var resources = {
+                                    'js'  : ['test'],
+                                    'css' : ['test']
+                                };
+                loadResources(resources);
+            }
+        </script>
+    </head>
+    <body>
+        <div id="test"><!-- TESTING CONTENT --></div>
+        <script type="text/javascript" src="js/scout.js"></script>
+    </body>
+
+</html>
