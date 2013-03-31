@@ -19,57 +19,105 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-/** 
- * load required resources i.e, JavaScript, CSS
- * @param   JSON object
- **/
-var loadResources = function(){
 
-    if( arguments.length < 1 ) return;
-    var required_resources = arguments[0];
+var 
+    /** 
+     * load required resources i.e, JavaScript, CSS
+     * @param   JSON object
+     **/
+    loadResources = function(){
 
-    for(var resource_type in required_resources){
-        for(var resource in required_resources[resource_type]){
-            resource_path = resource_type + '/' + required_resources[resource_type][resource] + resourceExt[resource_type];
-            if ( resource_type == 'js' ){
-                loadJS(resource_path);
-            }
-            if( resource_type == 'css' ){
-                loadCSS(resource_path);
+        if( arguments.length < 1 ){
+            throw("Error: loadResources method takes atleast 1 argument given 0");
+        }else{
+            if(!("object" === typeof(arguments[0]))){
+                throw("Error: provide resources in this format { 'js': [ 'js1', 'js2' ], 'css': ['css1', 'css2'] }");
             }
         }
-    }
-}
 
-/**
- * load javascript
- * @param   resource
- */
-var loadJS = function(resource){
-    var script  = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src  =  resource + noCache();
-    document.body.appendChild(script); 
-}
+        if( arguments[1] ) {
+            if(!("object" === typeof(arguments[1]))){
+                throw("Error: provide caching settings in this format { 'js': true, 'css': true }");   
+            }else{
+                _caching = arguments[1];
+            }
+        }
 
-/**
- * load css
- * @param   resource
- */
-var loadCSS = function(resource){
-    var head   = document.head || document.getElementsByTagName('head')[0];
-    var style  = document.createElement('link');
-    style.type = 'text/css';
-    style.rel  = 'stylesheet';
-    style.href = resource + noCache();
-    head.appendChild(style);
-}
+        var required_resources = arguments[0];
 
-var noCache = function(){
-    return '?t=' + new Date().getTime();
-}
+        for(var resource_type in required_resources){
+            for(var resource in required_resources[resource_type]){
+                var resource_name = required_resources[resource_type][resource];
 
-var resourceExt = {
-    'js'  : '.js',
-    'css' : '.css'
-}
+                if ( isLocalResource(resource_name) ) {
+                    resource_path = resource_type + '/' + resource_name + resourceExt[resource_type];
+                }else{
+                    resource_path = resource_name;
+                }
+
+                if ( resource_type === 'js' ){
+                    loadJS(resource_path);
+                }
+                if( resource_type === 'css' ){
+                    loadCSS(resource_path);
+                }
+            }
+        }
+    },
+
+    /**
+     * load javascript
+     * @param   resource
+     */ 
+    loadJS = function(resource){
+        var script  = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src  =  resource + fromCache(_caching['css']);
+        document.body.appendChild(script); 
+    },
+
+    /**
+     * load css
+     * @param   resource
+     */
+    loadCSS = function(resource){
+        var head   = document.head || document.getElementsByTagName('head')[0];
+        var style  = document.createElement('link');
+        style.type = 'text/css';
+        style.rel  = 'stylesheet';
+        style.href = resource + fromCache(_caching['js']);
+        head.appendChild(style);
+    },
+
+    /**
+     * check whether browser cache should utilize.
+     */
+    fromCache = function(cache){
+        return !cache ? '?t=' + new Date().getTime() : '';
+    },
+
+    /**
+     * check whether resource is local.
+     */
+    isLocalResource = function(resource_name){
+        var _scheme = resource_name.split(":")[0];
+        return (!( _scheme === 'http' || _scheme === 'https')) 
+    },
+
+    /**
+     * default cache setting.
+     * utilizing browser cache.
+     */
+    _caching = {
+         'js'  : true
+        ,'css' : true
+    },
+
+    /**
+     * helper function
+     * return resource extension
+     */
+    resourceExt = {
+        'js'  : '.js',
+        'css' : '.css'
+    };

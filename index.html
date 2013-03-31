@@ -6,16 +6,23 @@
 
          window.onload = function(){
                 var resources = {
-                                    'js'  : ['test'],
-                                    'css' : ['test']
-                                };
-                loadResources(resources);
+                     'js'      : [ 'test', 'http://code.jquery.com/jquery-1.9.1.js']
+                    ,'css'     : [ 'test' ]
+                };
+                
+                var caching = {
+                     'js' : false
+                    ,'css': false  
+                }
+
+                loadResources(resources, caching);
             }
         </script>
     </head>
     <body>
         <div id="test"><!-- TESTING CONTENT --></div>
         <script type="text/javascript" src="js/scout.js"></script>
+
     </body>
 
 </html>
