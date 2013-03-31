@@ -72,7 +72,7 @@ var
     loadJS = function(resource){
         var script  = document.createElement('script');
         script.type = 'text/javascript';
-        script.src  =  resource + fromCache(_caching['css']);
+        script.src  =  resource + fromCache(_caching['js']);
         document.body.appendChild(script); 
     },
 
@@ -85,7 +85,7 @@ var
         var style  = document.createElement('link');
         style.type = 'text/css';
         style.rel  = 'stylesheet';
-        style.href = resource + fromCache(_caching['js']);
+        style.href = resource + fromCache(_caching['css']);
         head.appendChild(style);
     },
 
