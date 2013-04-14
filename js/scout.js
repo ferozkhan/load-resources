@@ -56,10 +56,10 @@ var
                 }
 
                 if ( resource_type === 'js' ){
-                    loadJS(resource_path);
+                    loadJS(resource_path, arguments[2]);
                 }
                 if( resource_type === 'css' ){
-                    loadCSS(resource_path);
+                    loadCSS(resource_path, arguments[2]);
                 }
             }
         }
@@ -69,24 +69,32 @@ var
      * load javascript
      * @param   resource
      */ 
-    loadJS = function(resource){
+    loadJS = function(resource, done){
         var script  = document.createElement('script');
         script.type = 'text/javascript';
         script.src  =  resource + fromCache(_caching['js']);
         document.body.appendChild(script); 
+	    
+        if(done){
+            script.onload = done(resource);
+        }
     },
 
     /**
      * load css
      * @param   resource
      */
-    loadCSS = function(resource){
+    loadCSS = function(resource, done){
         var head   = document.head || document.getElementsByTagName('head')[0];
         var style  = document.createElement('link');
         style.type = 'text/css';
         style.rel  = 'stylesheet';
         style.href = resource + fromCache(_caching['css']);
         head.appendChild(style);
+
+        if(done){
+            style.onload = done(resource);
+        }
     },
 
     /**

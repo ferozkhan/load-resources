@@ -4,19 +4,22 @@
         <title> Load Resource on Demand </title>
         <script type="text/javascript">
 
-         window.onload = function(){
-                var resources = {
-                     'js'      : [ 'test', 'http://code.jquery.com/jquery-1.9.1.js']
-                    ,'css'     : [ 'test' ]
-                };
-                
-                var caching = {
-                     'js' : false
-                    ,'css': false  
-                }
+        window.onload = function(){
+            var resources = {
+                'js'      : [ 'test', 'http://code.jquery.com/jquery-1.9.1.js'],
+                'css'     : [ 'test' ]
+                },
 
-                loadResources(resources, caching);
-            }
+                caching = {
+                 'js' : false,
+                 'css': false  
+                },
+                callback = function(resource){
+                    // ... 
+                };
+
+        loadResources(resources, caching, callback);
+        }
         </script>
     </head>
     <body>
