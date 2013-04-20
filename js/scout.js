@@ -25,40 +25,38 @@ var
      * load required resources i.e, JavaScript, CSS
      * @param   JSON object
      **/
-    loadResources = function(){
+    loadResources = function() {
 
-        if( arguments.length < 1 ){
+        if (arguments.length < 1) {
             throw("Error: loadResources method takes atleast 1 argument given 0");
-        }else{
-            if(!("object" === typeof(arguments[0]))){
+        } else {
+            if (!isObject(arguments[0])) {
                 throw("Error: provide resources in this format { 'js': [ 'js1', 'js2' ], 'css': ['css1', 'css2'] }");
             }
         }
 
-        if( arguments[1] ) {
-            if(!("object" === typeof(arguments[1]))){
-                throw("Error: provide caching settings in this format { 'js': true, 'css': true }");   
-            }else{
-                _caching = arguments[1];
-            }
+        if (!isObject(arguments[1])) {
+            throw ("Error: provide caching settings in this format { 'js': true, 'css': true }");   
+        } else {
+            _caching = arguments[1];
         }
 
         var required_resources = arguments[0];
 
-        for(var resource_type in required_resources){
-            for(var resource in required_resources[resource_type]){
+        for (var resource_type in required_resources) {
+            for (var resource in required_resources[resource_type]) {
                 var resource_name = required_resources[resource_type][resource];
 
-                if ( isLocalResource(resource_name) ) {
+                if (isLocalResource(resource_name)) {
                     resource_path = resource_type + '/' + resource_name + resourceExt[resource_type];
-                }else{
+                } else {
                     resource_path = resource_name;
                 }
 
-                if ( resource_type === 'js' ){
+                if (resource_type === 'js') {
                     loadJS(resource_path, arguments[2]);
                 }
-                if( resource_type === 'css' ){
+                if (resource_type === 'css') {
                     loadCSS(resource_path, arguments[2]);
                 }
             }
@@ -69,13 +67,13 @@ var
      * load javascript
      * @param   resource
      */ 
-    loadJS = function(resource, done){
+    loadJS = function (resource, done) {
         var script  = document.createElement('script');
         script.type = 'text/javascript';
         script.src  =  resource + fromCache(_caching['js']);
         document.body.appendChild(script); 
 	    
-        if(done){
+        if (done) {
             script.onload = done(resource);
         }
     },
@@ -84,7 +82,7 @@ var
      * load css
      * @param   resource
      */
-    loadCSS = function(resource, done){
+    loadCSS = function (resource, done) {
         var head   = document.head || document.getElementsByTagName('head')[0];
         var style  = document.createElement('link');
         style.type = 'text/css';
@@ -92,7 +90,7 @@ var
         style.href = resource + fromCache(_caching['css']);
         head.appendChild(style);
 
-        if(done){
+        if (done) {
             style.onload = done(resource);
         }
     },
@@ -100,17 +98,28 @@ var
     /**
      * check whether browser cache should utilize.
      */
-    fromCache = function(cache){
+    fromCache = function (cache) {
         return !cache ? '?t=' + new Date().getTime() : '';
     },
 
     /**
      * check whether resource is local.
      */
-    isLocalResource = function(resource_name){
+    isLocalResource = function (resource_name) {
         var _scheme = resource_name.split(":")[0];
-        return (!( _scheme === 'http' || _scheme === 'https')) 
+        return (!( _scheme === 'http' || _scheme === 'https'));
     },
+
+    /**
+     * Helper functions
+     */
+    isObject = function (o) {
+        return isNull(o) ? false : typeof o === 'object';
+    },
+
+    isNull = function (o) {
+        return typeof o === 'undefined' || (typeof o === 'object' && !o);
+    }
 
     /**
      * default cache setting.
