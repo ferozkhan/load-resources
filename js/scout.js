@@ -70,9 +70,9 @@ var
     loadJS = function (resource, done) {
         var script  = document.createElement('script');
         script.type = 'text/javascript';
-        script.src  =  resource + fromCache(_caching['js']);
-        document.body.appendChild(script); 
-	    
+        script.src  =  resource + fromCache(_caching.js);
+        document.body.appendChild(script);
+
         if (done) {
             script.onload = done(resource);
         }
@@ -87,7 +87,7 @@ var
         var style  = document.createElement('link');
         style.type = 'text/css';
         style.rel  = 'stylesheet';
-        style.href = resource + fromCache(_caching['css']);
+        style.href = resource + fromCache(_caching.css);
         head.appendChild(style);
 
         if (done) {
@@ -111,30 +111,28 @@ var
     },
 
     /**
-     * Helper functions
+     * default cache setting.
+     * utilizing browser cache.
      */
+    _caching = {
+        'js'  : true,
+        'css' : true
+    },
+
+    /**
+     * helper functions
+     *
+     * return resource extension
+     */
+    resourceExt = {
+        'js'  : '.js',
+        'css' : '.css'
+    },
+
     isObject = function (o) {
         return isNull(o) ? false : typeof o === 'object';
     },
 
     isNull = function (o) {
         return typeof o === 'undefined' || (typeof o === 'object' && !o);
-    }
-
-    /**
-     * default cache setting.
-     * utilizing browser cache.
-     */
-    _caching = {
-         'js'  : true
-        ,'css' : true
-    },
-
-    /**
-     * helper function
-     * return resource extension
-     */
-    resourceExt = {
-        'js'  : '.js',
-        'css' : '.css'
     };
